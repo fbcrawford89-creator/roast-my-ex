@@ -1,69 +1,31 @@
-import { NextResponse } from 'next/server';
-import OpenAI from 'openai';
+# Roast My Ex
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+A clean AI-powered website that generates funny, savage roast text for an ex and turns it into social-ready ad copy.
 
-export async function POST(request: Request) {
-  try {
-    const body = await request.json();
-    const { name, reason, tone, focus } = body;
+## Features
+- Page layout and product branding for "Roast My Ex"
+- AI roast generator form with name, breakup details, tone, and focus
+- generated roast output plus ad caption
+- responsive modern dark UI
+- ready for OpenAI API integration
 
-    if (!process.env.OPENAI_API_KEY) {
-      return NextResponse.json(
-        { error: 'Missing OPENAI_API_KEY environment variable.' },
-        { status: 500 }
-      );
-    }
+## Getting started
 
-    const prompt = `
-      Write a ${tone} roast for a person named ${name || 'my ex'}.
-      The situation: ${reason || 'They were chaotic, dramatic, and not worth my time.'}
-      Focus on ${focus || 'overall chaos'}.
+1. Install dependencies:
+   npm install
+2. Create a local environment file:
+   cp .env.example .env.local
+3. Add your OpenAI API key:
+   OPENAI_API_KEY=your_key_here
+4. Start the app:
+   npm run dev
+5. Open http://localhost:3000
 
-      Requirements:
-      - Keep it funny, sharp, and original.
-      - Make it safe and non-hateful.
-      - Avoid direct threats or abusive language.
-      - Should feel like a viral breakup post.
-      - Return valid JSON with exactly this shape:
-      {
-        "roast": "...",
-        "adCopy": "..."
-      }
-    `;
+## Important note
+This project currently expects an OpenAI API key to generate live roasts. Without it, the app will return a server error.
 
-    const completion = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
-      temperature: 0.9,
-      messages: [
-        {
-          role: 'system',
-          content: 'You are a creative comedy writer who makes funny, edgy, safe, viral breakup content.',
-        },
-        {
-          role: 'user',
-          content: prompt,
-        },
-      ],
-    });
-
-    const content = completion.choices[0]?.message?.content || '{}';
-    const jsonMatch = content.match(/\{[\s\S]*\}/);
-    const parsed = jsonMatch ? JSON.parse(jsonMatch[0]) : { roast: content, adCopy: 'Roast My Ex' };
-
-    return NextResponse.json({
-      roast: parsed.roast || 'You were a lesson, not a highlight.',
-      adCopy:
-        parsed.adCopy ||
-        'Send your ex a roast they will never forget. Create your viral breakup comeback in 10 seconds.',
-    });
-  } catch (error) {
-    console.error('Roast generation failed:', error);
-    return NextResponse.json(
-      { error: 'Failed to generate a roast. Please try again.' },
-      { status: 500 }
-    );
-  }
-}
+## Project structure
+- app/page.tsx — homepage UI
+- app/api/roast/route.ts — AI roast generation route
+- app/layout.tsx — root layout
+- app/globals.css — styling

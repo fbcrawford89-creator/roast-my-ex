@@ -1,12 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { FormEvent, useState } from 'react';
 
 const initialForm = {
   name: '',
   reason: '',
   tone: 'savage',
-  focus: 'cheating',
+  focus: 'overall',
 };
 
 export default function HomePage() {
@@ -20,7 +20,7 @@ export default function HomePage() {
     setForm((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = async (event: React.FormEvent) => {
+  const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     setLoading(true);
     setError('');
@@ -35,13 +35,13 @@ export default function HomePage() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Something went wrong.');
+        throw new Error(data.error || 'Something went wrong while generating your roast.');
       }
 
       setRoast(data.roast || '');
       setAdCopy(data.adCopy || '');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred.');
+      setError(err instanceof Error ? err.message : 'An unexpected error occurred.');
     } finally {
       setLoading(false);
     }
@@ -51,23 +51,25 @@ export default function HomePage() {
     <main className="page-shell">
       <section className="hero">
         <div className="hero-copy">
-          <p className="eyebrow">YOU DESERVE A BETTER STORY</p>
+          <p className="eyebrow">TURN THE BREAKUP INTO CONTENT</p>
           <h1>Roast My Ex</h1>
           <p className="subtitle">
-            Turn your breakup pain into a savage, funny, highly shareable roast powered by AI.
+            Create savage, funny, and shareable breakup roasts in seconds. Built for the internet,
+            designed for revenge content, and powered by AI.
           </p>
 
           <div className="hero-badges">
             <span>AI-generated</span>
-            <span>Funny</span>
-            <span>Shareable</span>
+            <span>Classic savage</span>
+            <span>Social-ready</span>
           </div>
         </div>
 
         <div className="hero-card">
-          <p className="label">Breakup summary</p>
+          <p className="label">Example roast</p>
           <h3>
-            “{form.name || 'Your ex'} was a walking red flag with a good haircut.”
+            “{form.name || 'Your ex'} had the emotional range of a Wi-Fi password: confusing,
+            weak, and always leaving me on edge.”
           </h3>
         </div>
       </section>
@@ -106,13 +108,13 @@ export default function HomePage() {
             </label>
 
             <label>
-              Focus
+              Roast focus
               <select value={form.focus} onChange={(e) => handleChange('focus', e.target.value)}>
+                <option value="overall">Overall chaos</option>
                 <option value="cheating">Cheating</option>
                 <option value="ghosting">Ghosting</option>
                 <option value="money">Money habits</option>
                 <option value="love-bombing">Love bombing</option>
-                <option value="overall">Overall chaos</option>
               </select>
             </label>
           </div>
@@ -134,15 +136,35 @@ export default function HomePage() {
               </div>
 
               <div className="output-box ad-box">
-                <h3>Ad caption</h3>
+                <h3>Campaign caption</h3>
                 <p>{adCopy}</p>
               </div>
             </>
           ) : (
             <div className="placeholder-box">
-              Your roast will appear here. Feed in the details and let the AI do the damage.
+              Tell us who they were and what they did. We’ll turn the chaos into a savage one-liner.
             </div>
           )}
+        </div>
+      </section>
+
+      <section className="features">
+        <div className="feature-card">
+          <span>01</span>
+          <h3>Fast generation</h3>
+          <p>Generate a roast in seconds with a few breakup details.</p>
+        </div>
+
+        <div className="feature-card">
+          <span>02</span>
+          <h3>Sharable style</h3>
+          <p>Turn your roast into meme-style marketing copy for social posts.</p>
+        </div>
+
+        <div className="feature-card">
+          <span>03</span>
+          <h3>Built for viral content</h3>
+          <p>Designed to feel like the kind of funny post people screenshot and share.</p>
         </div>
       </section>
     </main>
